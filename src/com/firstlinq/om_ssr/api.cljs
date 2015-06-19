@@ -9,7 +9,8 @@
   (println "No service handler registered for " id))
 
 (defprotocol Service
-  (call [this service payload]))
+  (call [this service payload]
+        "Calls a service api and returns a channel through which the result will be returned."))
 
 (defrecord AService [in-ch]
   Service

@@ -18,9 +18,8 @@
 (defn- make-req-map [state-sym service-reqs]
   (reduce
     (fn [accum [data-key service-call param txform]]
-      (assoc accum data-key `[(com.firstlinq.om-ssr.api/handle-request
-                                ~state-sym ~service-call ~param)
-                              ~txform]))
+      (->> `[(com.firstlinq.om-ssr.api/handle-request ~state-sym ~service-call ~param) ~txform]
+           (assoc accum data-key)))
     {}
     service-reqs))
 
@@ -36,42 +35,45 @@
           (string? title)
           (assoc-in [:route :title] title)))
 
-#?(:cljs (defn- append-return-uri [uri return-uri]
-           (when uri
-             (let [return-uri (js/encodeURIComponent return-uri)]
-               (if (not= -1 (.indexOf uri "?"))
-                 (str uri "&redirect=" return-uri)
-                 (str uri "?redirect=" return-uri))))))
+#?(:cljs
+   (defn- append-return-uri [uri return-uri]
+     (when uri
+       (let [return-uri (js/encodeURIComponent return-uri)]
+         (if (not= -1 (.indexOf uri "?"))
+           (str uri "&redirect=" return-uri)
+           (str uri "?redirect=" return-uri))))))
 
-#?(:cljs (defn create-route-handler [state]
-           (fn [id params]
-             (let [params (->> (get-in params [:domkm.silk/url :query])
-                               (assoc params :query))
-                   uri    (str (:domkm.silk/url params))]
-               (go
-                 (when-let [ch (com.firstlinq.om-ssr.state/get-state @state id params {})]
-                   (let [new-state (<! ch)]
-                     (if-let [location (redirect-key new-state)]
-                       (do (set! (.-location js/window) (append-return-uri location uri)))
-                       (do (swap! state merge new-state)
-                           (when-let [title (get-in new-state [:route :title])]
-                             (set! (.-title js/document) title)))))))))))
+#?(:cljs
+   (defn create-route-handler [state]
+     (fn [id params]
+       (let [params (->> (get-in params [:domkm.silk/url :query])
+                         (assoc params :query))
+             uri    (str (:domkm.silk/url params))]
+         (go
+           (when-let [ch (com.firstlinq.om-ssr.state/get-state @state id params {})]
+             (let [new-state (<! ch)]
+               (if-let [location (redirect-key new-state)]
+                 (do (set! (.-location js/window) (append-return-uri location uri)))
+                 (do (swap! state merge new-state)
+                     (when-let [title (get-in new-state [:route :title])]
+                       (set! (.-title js/document) title)))))))))))
 
 
-#?(:cljs (defn reify-map
-           [init req-map route title opts]
-           (let [ch (chan)]
-             (go
-               (loop [accum (merge init {:route route})
-                      items req-map]
-                 (if-let [item (first items)]
-                   (let [[k [v txform]] item
-                         res (<! v)
-                         res (if txform (txform (:body res)) (:body res))
-                         res (assoc accum k res)]
-                     (recur res (rest items)))
-                   (put! ch (add-title-to-state title accum)))))
-             ch)))
+#?(:cljs
+   (defn reify-map
+     [init req-map route title opts]
+     (let [ch (chan)]
+       (go
+         (loop [accum (merge init {:route route})
+                items req-map]
+           (if-let [item (first items)]
+             (let [[k [v txform]] item
+                   res (<! v)
+                   res (if txform (txform (:body res)) (:body res))
+                   res (assoc accum k res)]
+               (recur res (rest items)))
+             (put! ch (add-title-to-state title accum)))))
+       ch)))
 
 
 #?(:clj
