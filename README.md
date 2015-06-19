@@ -11,6 +11,7 @@ Add `[com.firstlinq/om-ssr-node "0.1.0"]` to your dependencies and `[lein-npm "0
 Then type `lein npm pprint > package.json`. This will generate a package.json consisting of node dependencies in this project and your project plus that defined in any other dependencies that you have defined. 
 
 
+This is a pre-alpha quality proof of concept, pull requests welcome.
 
 ## License
 
