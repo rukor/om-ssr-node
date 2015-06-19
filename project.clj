@@ -16,12 +16,5 @@
                                 [react "0.12.2"]
                                 [st "0.5.4"]]
 
-            :repositories [["snapshots" {:url      "http://repo.firstlinq.com:8080/repository/snapshots"
-                                         :username :env/archiva_username
-                                         :password :env/archiva_passphrase}]
-                           ["releases" {:url      "http://repo.firstlinq.com:8080/repository/internal"
-                                        :username :env/archiva_username
-                                        :password :env/archiva_passphrase}]]
-
             :jar-exclusions [#"\.cljx|\.swp|\.swo|\.DS_Store"]
             :global-vars {*warn-on-reflection* true})
