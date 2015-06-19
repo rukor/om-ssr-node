@@ -1,5 +1,11 @@
 (ns com.firstlinq.om-ssr.log)
 
-(defn ->log-output [e]
-  (if (or (coll? e) (keyword? e) (pr-str e)) e))
+(defn ->log-output
+  "Pretty prints CLJS objects, but allows POJOs to be logged as is, so that the browser's inspection
+  can continue to function for POJOs"
+  [e]
+  (cond-> e
+          (or (coll? e)
+              (keyword? e))
+          (pr-str)))
 
