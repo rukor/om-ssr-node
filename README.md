@@ -13,6 +13,14 @@ Then type `lein npm pprint > package.json`. This will generate a package.json co
 
 This is a pre-alpha quality proof of concept, pull requests welcome.
 
+See [om-ssr-hello](http://github.com/rukor/om-ssr-hello) for a working sample app, and [om-ssr-app](http://github.com/rukor/om-ssr-app) for a leiningen template that can be 
+used to bootrap webapps based on om-ssr-node.
+
+## TODO
+
+- Documentation
+- Tests
+
 ## License
 
 Copyright © 2015 Roland Ukor

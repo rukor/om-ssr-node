@@ -1,3 +1,5 @@
 (ns com.firstlinq.om-ssr)
 
-(def redirect-key ::redirect-uri)
+(def
+  ^{:doc "Used to indicate whether or not the user should be redirected to a different URL"}
+  redirect-key ::redirect-uri)
