@@ -1,3 +1,9 @@
+# Deprecation Notice:
+
+This library is deprecated in favour of [cljs-ssr-node](http://github.com/rukor/cljs-ssr-node), which supports both OM and Reagent out of the box and makes it trivial to support other view technologies.
+
+
+
 # om-ssr-node
 
 A tiny library to support OM-based CLJS development development on NodeJS with server side rendering and silk-based route handling.
